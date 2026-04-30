@@ -5,8 +5,9 @@
   "gettext-domain": "order extensions",
   "name": "Order Gnome Shell extensions",
   "shell-version": [
-    "45", 
-    "46"
+    "45",
+    "46",
+    "50"
   ],
   "url": "https://github.com/andia89/order-icons",
   "uuid": "order-extensions@wa4557.github.com",
