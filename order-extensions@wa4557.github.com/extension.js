@@ -130,35 +130,30 @@ function _addToPanelBox(role, indicator, position, box) {
 
 
 function setSettingValues(name, box) {
-
-    let index = null;
-    let index_arr = null;
+    let key = null;
+    let arr = null;
 
     if (box.name == "panelRight") {
-        index = getSettingsPosition(name, order_arr_right);
-        index_arr = order_arr_right.indexOf(name);
-        if (index_arr == -1) {
-            order_arr_right.splice(index, 0, name);
-        }
+        key = "order-icons-right";
+        arr = order_arr_right;
+    } else if (box.name == "panelCenter") {
+        key = "order-icons-center";
+        arr = order_arr_center;
+    } else if (box.name == "panelLeft") {
+        key = "order-icons-left";
+        arr = order_arr_left;
     }
-    if (box.name == "panelCenter") {
-        index = getSettingsPosition(name, order_arr_center);
-        index_arr = order_arr_center.indexOf(name);
-        if (index_arr == -1) {
-            order_arr_center.splice(index, 0, name);
-        }
-    }
-    if (box.name == "panelLeft") {
-        index = getSettingsPosition(name, order_arr_left);
-        index_arr = order_arr_left.indexOf(name);
-        if (index_arr == -1) {
-            order_arr_left.splice(index, 0, name);
-        }
-    }
+    if (arr == null)
+        return;
 
-    settings.set_value("order-icons-right", new GLib.Variant('as', order_arr_right))
-    settings.set_value("order-icons-center", new GLib.Variant('as', order_arr_center))
-    settings.set_value("order-icons-left", new GLib.Variant('as', order_arr_left))
+    // Only persist when the indicator is new. Writing unconditionally fires
+    // changed::order-icons-* -> _redrawIndicators() -> _addToPanelBox() -> here
+    // again, an endless loop that starves the shell's main loop (seen on GNOME 50).
+    if (arr.includes(name))
+        return;
+
+    arr.splice(getSettingsPosition(name, arr), 0, name);
+    settings.set_value(key, new GLib.Variant('as', arr));
 }
 
 
